@@ -1,16 +1,17 @@
-// HelloPoint1.js (c) 2012 matsuda
+// HelloPint2.js (c) 2012 matsuda
 // Vertex shader program
 var VSHADER_SOURCE = 
+  'attribute vec4 a_Position;\n' + // attribute variable
   'void main() {\n' +
-  '  gl_Position = vec4(0.5, -0.3, 0.0, 1.0);\n' + // Set the vertex coordinates of the point
-  '  gl_PointSize = 10.0;\n' +                    // Set the point size
-  '}\n';
+  '  gl_Position = a_Position;\n' +
+  '  gl_PointSize = 10.0;\n' +
+  '}\n'; 
 
 // Fragment shader program
-var FSHADER_SOURCE = `
-  void main() {
-    gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
-  }`
+var FSHADER_SOURCE = 
+  'void main() {\n' +
+  '  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n' +
+  '}\n';
 
 function main() {
   // Retrieve <canvas> element
@@ -29,12 +30,23 @@ function main() {
     return;
   }
 
+  // Get the storage location of a_Position
+  var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+  if (a_Position < 0) {
+    console.log('Failed to get the storage location of a_Position');
+    return;
+  }
+
+  let xpos = .2;
+  // Pass vertex position to attribute variable
+  gl.vertexAttrib3f(a_Position, xpos, 0.0, 0.0);
+
   // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT);
-
-  // Draw a point
+    
+  // Draw
   gl.drawArrays(gl.POINTS, 0, 1);
 }
