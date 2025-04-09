@@ -61,6 +61,11 @@ function addActionsForHtmlUI() {
   // Button events (shape type)
   document.getElementById('green').onclick = function() { g_selectedColor = [0.0, 1.0, 0.0, 1.0]; };
   document.getElementById('red').onclick = function() { g_selectedColor = [1.0, 0.0, 0.0, 1.0]; };
+
+  // Slider events
+  document.getElementById('redSlide').addEventListener('mouseup', function() { g_selectedColor[0] = this.value / 100; });
+  document.getElementById('greenSlide').addEventListener('mouseup', function() { g_selectedColor[1] = this.value / 100; });
+  document.getElementById('blueSlide').addEventListener('mouseup', function() { g_selectedColor[2] = this.value / 100; });
 }
 
 function main() {
@@ -91,7 +96,7 @@ function click(ev) {
 
   // Store the coordinates to g_points array
   g_points.push([x, y]);
-  g_colors.push(g_selectedColor); // Store the color to g_colors array
+  g_colors.push(g_selectedColor.slice()); // Store the color to g_colors array
 
   // Store the coordinates to g_points array
   // if (x >= 0.0 && y >= 0.0) {      // First quadrant
