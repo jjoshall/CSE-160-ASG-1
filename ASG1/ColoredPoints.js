@@ -55,9 +55,22 @@ function connectVariablesToGLSL() {
   }
 }
 
+let g_selectedColor = [1.0, 1.0, 1.0, 1.0];
+
+function addActionsForHtmlUI() {
+  // Button events (shape type)
+  document.getElementById('green').onclick = function() { g_selectedColor = [0.0, 1.0, 0.0, 1.0]; };
+  document.getElementById('red').onclick = function() { g_selectedColor = [1.0, 0.0, 0.0, 1.0]; };
+}
+
 function main() {
+  // Set up canvas and gl variables
   setupWebGL();
-  connectVariablesToGLSL();  
+  //Set up GLSL shaders and connect variables to GLSL
+  connectVariablesToGLSL();
+
+  // Set up actions for HTML UI
+  addActionsForHtmlUI();
 
   // Register function (event handler) to be called on a mouse press
   canvas.onmousedown = click;
@@ -78,14 +91,16 @@ function click(ev) {
 
   // Store the coordinates to g_points array
   g_points.push([x, y]);
+  g_colors.push(g_selectedColor); // Store the color to g_colors array
+
   // Store the coordinates to g_points array
-  if (x >= 0.0 && y >= 0.0) {      // First quadrant
-    g_colors.push([1.0, 0.0, 0.0, 1.0]);  // Red
-  } else if (x < 0.0 && y < 0.0) { // Third quadrant
-    g_colors.push([0.0, 1.0, 0.0, 1.0]);  // Green
-  } else {                         // Others
-    g_colors.push([1.0, 1.0, 1.0, 1.0]);  // White
-  }
+  // if (x >= 0.0 && y >= 0.0) {      // First quadrant
+  //   g_colors.push([1.0, 0.0, 0.0, 1.0]);  // Red
+  // } else if (x < 0.0 && y < 0.0) { // Third quadrant
+  //   g_colors.push([0.0, 1.0, 0.0, 1.0]);  // Green
+  // } else {                         // Others
+  //   g_colors.push([1.0, 1.0, 1.0, 1.0]);  // White
+  // }
 
   // Draw every shape that is supposed to be drawn
   renderAllShapes();
