@@ -95,6 +95,100 @@ function addActionsForHtmlUI() {
   // Slider events
   document.getElementById('sizeSlide').addEventListener('mouseup', function() { g_selectedSize = this.value; });
   document.getElementById('segmentSlide').addEventListener('mouseup', function() { g_seletcedSegment = this.value; });
+
+  // Show reference image
+  document.getElementById('showRefButton').onclick = function() {
+    document.getElementById('refImage').style.display = 'block';
+  }
+
+  // Recreate the reference image
+  document.getElementById('recreateButton').onclick = function() {
+    drawReferenceTriangles();
+  }
+}
+
+function drawReferenceTriangles() {
+  // Body
+  gl.uniform4f(u_FragColor, 1.0, 1.0, 0.0, 1.0);
+  drawTriangle([
+    -0.1, 0.0,
+    0.5, 0.0,
+    0.2, 0.5
+  ]);
+  // Red Chest
+  gl.uniform4f(u_FragColor, 1.0, 0.0, 0.0, 1.0);
+  drawTriangle([
+    0.15, 0.178571,
+    0.25, 0.178571,
+    0.25, 0.107143
+  ]);
+  // Neck
+  gl.uniform4f(u_FragColor, 1.0, 1.0, 0.0, 1.0);
+  drawTriangle([
+    0.35, 0.214286,
+    0.35, 0.357143,
+    0.5, 0.214286
+  ]);
+  // Head
+  drawTriangle([
+    0.4, 0.285714,
+    0.7, 0.285714,
+    0.4, 0.55
+  ]);
+  // Left bicep
+  drawTriangle([
+    0.1, 0.5,
+    0.3, 0.5,
+    0.2, 0.714286
+  ]);
+  // Left forearm
+  drawTriangle([
+    0.27, 0.63,
+    0.14, 0.785714,
+    0.4, 0.857143
+  ]);
+  // Left hand
+  drawTriangle([
+    0.4, 0.857143,
+    0.35, 0.9642857,
+    0.55, 0.8928571
+  ]);
+  // Right bicep
+  drawTriangle([
+    0.6, 0.0357143,
+    0.6, -0.285714,
+    0.45, -0.0357143
+  ]);
+  // Right forearm
+  drawTriangle([
+    0.5, -0.25,
+    0.7, -0.285714,
+    0.5, -0.5
+  ]);
+  // Right hand
+  drawTriangle([
+    0.4, -0.4642857,
+    0.55, -0.535714,
+    0.3, -0.642857
+  ]);
+  // Lower abdomen
+  drawTriangle([
+    -0.1, 0.214286,
+    -0.2, -0.107143,
+    0, -0.107143
+  ]);
+  // Hip
+  drawTriangle([
+    -0.3, 0,
+    -0.3, -0.142857,
+    -0.1, -0.214286
+  ]);
+  // Left thigh
+  drawTriangle([
+    -0.3, 0,
+    -0.3, -0.142857,
+    -0.8, -0.428571
+  ]);
 }
 
 function main() {
