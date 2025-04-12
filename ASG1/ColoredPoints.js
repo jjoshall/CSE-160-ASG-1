@@ -66,15 +66,23 @@ function connectVariablesToGLSL() {
   }
 }
 
+// Constants
+const POINT = 0;
+const TRIANGLE = 1;
+
 // Globals related UI elements
 let g_selectedColor = [1.0, 1.0, 1.0, 1.0];
 let g_selectedSize = 5.0;
+let g_seletcedType = POINT;
 
 function addActionsForHtmlUI() {
   // Button events (shape type)
   document.getElementById('green').onclick = function() { g_selectedColor = [0.0, 1.0, 0.0, 1.0]; };
   document.getElementById('red').onclick = function() { g_selectedColor = [1.0, 0.0, 0.0, 1.0]; };
   document.getElementById('clearButton').onclick = function() { g_shapesList = []; renderAllShapes(); };
+  
+  document.getElementById('pointButton').onclick = function() { g_seletcedType = POINT };
+  document.getElementById('triangleButton').onclick = function() { g_seletcedType = TRIANGLE };
 
   // Color slider events
   document.getElementById('redSlide').addEventListener('mouseup', function() { g_selectedColor[0] = this.value / 100; });
@@ -108,16 +116,19 @@ function main() {
 
 var g_shapesList = []; // The array for the position of a mouse press
 
-// var g_points = [];  // The array for the position of a mouse press
-// var g_colors = [];  // The array to store the color of a point
-// var g_sizes = [];   // The array to store the size of a point
-
 function click(ev) {
   // Extract the event click and return it in WebGL coordinates
   let [x, y] = convertCoordinatesEventToGL(ev);
 
   // Create and store a new point object
-  let point = new Point();
+  let point;
+  if (g_seletcedType == POINT) {
+    point = new Point();
+  }
+  else {
+    point = new Triangle();
+  }
+
   point.position = [x, y];
   point.color = g_selectedColor.slice();
   point.size = g_selectedSize;
