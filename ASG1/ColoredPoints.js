@@ -76,6 +76,7 @@ let g_selectedColor = [1.0, 1.0, 1.0, 1.0];
 let g_selectedSize = 5.0;
 let g_seletcedType = POINT;
 let g_seletcedSegment = 10;
+let g_selectedAlpha = 1.0;
 
 function addActionsForHtmlUI() {
   // Button events (shape type)
@@ -95,10 +96,19 @@ function addActionsForHtmlUI() {
   // Slider events
   document.getElementById('sizeSlide').addEventListener('mouseup', function() { g_selectedSize = this.value; });
   document.getElementById('segmentSlide').addEventListener('mouseup', function() { g_seletcedSegment = this.value; });
+  document.getElementById('alphaSlide').addEventListener('mouseup', function() { 
+    g_selectedAlpha = this.value / 100;
+    g_selectedColor[3] = g_selectedAlpha;
+  });
 
-  // Show reference image
+  // Toggle reference image display
   document.getElementById('showRefButton').onclick = function() {
-    document.getElementById('refImage').style.display = 'block';
+    const refImage = document.getElementById('refImage');
+    if (refImage.style.display === 'block') {
+      refImage.style.display = 'none';
+    } else {
+      refImage.style.display = 'block';
+    }
   }
 
   // Recreate the reference image
@@ -109,21 +119,13 @@ function addActionsForHtmlUI() {
 
 function drawReferenceTriangles() {
   // Body
-  gl.uniform4f(u_FragColor, 1.0, 1.0, 0.0, 1.0);
+  gl.uniform4f(u_FragColor, 0.0, 0.0, 1.0, 0.5);
   drawTriangle([
     -0.1, 0.0,
     0.5, 0.0,
     0.2, 0.5
   ]);
-  // Red Chest
-  gl.uniform4f(u_FragColor, 1.0, 0.0, 0.0, 1.0);
-  drawTriangle([
-    0.15, 0.178571,
-    0.25, 0.178571,
-    0.25, 0.107143
-  ]);
   // Neck
-  gl.uniform4f(u_FragColor, 1.0, 1.0, 0.0, 1.0);
   drawTriangle([
     0.35, 0.214286,
     0.35, 0.357143,
@@ -147,12 +149,32 @@ function drawReferenceTriangles() {
     0.14, 0.785714,
     0.4, 0.857143
   ]);
+  gl.uniform4f(u_FragColor, 1.0, 1.0, 0.0, 1.0);
   // Left hand
   drawTriangle([
     0.4, 0.857143,
     0.35, 0.9642857,
     0.55, 0.8928571
   ]);
+  // Right hand
+  drawTriangle([
+    0.4, -0.4642857,
+    0.55, -0.535714,
+    0.3, -0.642857
+  ]);
+  // Right foot
+  drawTriangle([
+    -0.6, -0.785714,
+    -0.8, -0.857142857,
+    -0.5, -0.857142857
+  ]);
+  // Left foot
+  drawTriangle([
+    -0.4, -0.857142857,
+    -0.6, -0.98,
+    -0.3, -0.98
+  ]);
+  gl.uniform4f(u_FragColor, 0.0, 0.0, 1.0, 0.5);
   // Right bicep
   drawTriangle([
     0.6, 0.0357143,
@@ -164,12 +186,6 @@ function drawReferenceTriangles() {
     0.5, -0.25,
     0.7, -0.285714,
     0.5, -0.5
-  ]);
-  // Right hand
-  drawTriangle([
-    0.4, -0.4642857,
-    0.55, -0.535714,
-    0.3, -0.642857
   ]);
   // Lower abdomen
   drawTriangle([
@@ -183,11 +199,58 @@ function drawReferenceTriangles() {
     -0.3, -0.142857,
     -0.1, -0.214286
   ]);
-  // Left thigh
+  // Right thigh
   drawTriangle([
     -0.3, 0,
     -0.3, -0.142857,
     -0.8, -0.428571
+  ]);
+  // Right calf
+  drawTriangle([
+    -0.7, -0.357143,
+    -0.8, -0.428571,
+    -0.6, -0.785714
+  ]);
+  // Left thigh
+  drawTriangle([
+    -0.3, -0.142857,
+    -0.1, -0.214286,
+    -0.7, -0.57142857
+  ]);
+  // Left calf
+  drawTriangle([
+    -0.5, -0.4285714,
+    -0.7, -0.57142857,
+    -0.4, -0.857142857
+  ]);
+  // brown
+  gl.uniform4f(u_FragColor, 0.5, 0.25, 0.0, 1.0);
+  // Arrow handle
+  drawTriangle([
+    -1, 1,
+    -0.55, 0.55,
+    -0.4, 0.6
+  ]);
+  // silver
+  gl.uniform4f(u_FragColor, 0.75, 0.75, 0.75, 1.0);
+  // Arrow head
+  drawTriangle([
+    -0.65, 0.5,
+    -0.35, 0.7,
+    -0.3, 0.45
+  ]);
+  // Red Chest Right Mark
+  gl.uniform4f(u_FragColor, 1.0, 0.0, 0.0, 1.0);
+  drawTriangle([
+    0.15, 0.178571,
+    0.25, 0.178571,
+    0.25, 0.107143
+  ]);
+  // Red Chest Left Mark
+  drawTriangle([
+    0.15, 0.107143,
+    0.15, 0.178571,
+    0.25, 0.107143
   ]);
 }
 
@@ -235,24 +298,6 @@ function click(ev) {
   point.color = g_selectedColor.slice();
   point.size = g_selectedSize;
   g_shapesList.push(point);
-
-  // // Store the coordinates to g_points array
-  // g_points.push([x, y]);
-
-  //  // Store the color to g_colors array
-  // g_colors.push(g_selectedColor.slice());
-
-  // // Store the size to g_sizes array
-  // g_sizes.push(g_selectedSize);
-
-  // Store the coordinates to g_points array
-  // if (x >= 0.0 && y >= 0.0) {      // First quadrant
-  //   g_colors.push([1.0, 0.0, 0.0, 1.0]);  // Red
-  // } else if (x < 0.0 && y < 0.0) { // Third quadrant
-  //   g_colors.push([0.0, 1.0, 0.0, 1.0]);  // Green
-  // } else {                         // Others
-  //   g_colors.push([1.0, 1.0, 1.0, 1.0]);  // White
-  // }
 
   // Draw every shape that is supposed to be drawn
   renderAllShapes();
