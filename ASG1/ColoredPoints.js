@@ -130,6 +130,25 @@ function addActionsForHtmlUI() {
     g_kaleidoscopeMode = this.checked;
   });
   
+  document.getElementById('replayButton').onclick = function() {
+    replayDrawing();
+  };  
+}
+
+/// ChatGPT helped me with this replay drawing function
+function replayDrawing() {
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  let sortedShapes = [...g_shapesList].sort((a, b) => a.timestamp - b.timestamp);
+
+  let baseTime = sortedShapes[0]?.timestamp || performance.now();
+
+  for (let i = 0; i < sortedShapes.length; i++) {
+    let shape = sortedShapes[i];
+    let elapsedTime = shape.timestamp - baseTime;
+    setTimeout(() => {
+      shape.render();
+    }, elapsedTime);
+  }
 }
 
 function drawReferenceTriangles() {
@@ -325,6 +344,7 @@ function click(ev) {
   }
 
   point.position = [x, y];
+  point.timestamp = performance.now();
   
   /// ChatGPT gave me some pointers with this portion 
   if (g_spectrumDraw && velocity > 0) {
@@ -356,6 +376,7 @@ function click(ev) {
 
       let clone = Object.create(Object.getPrototypeOf(point));
       Object.assign(clone, point);
+      clone.timestamp = performance.now();
       clone.position = [xRotated, yRotated];
       g_shapesList.push(clone);
     }
