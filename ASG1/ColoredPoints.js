@@ -80,6 +80,8 @@ let g_selectedAlpha = 1.0;
 let g_spectrumDraw = false;
 let g_lastMousePos = null;
 let g_lastMouseTime = null;
+let g_kaleidoscopeMode = false;
+let g_kaleidoscopeSegments = 6;
 
 function addActionsForHtmlUI() {
   // Button events (shape type)
@@ -123,6 +125,11 @@ function addActionsForHtmlUI() {
   document.getElementById('spectrumCheckbox').addEventListener('change', function() {
     g_spectrumDraw = this.checked;
   });
+
+  document.getElementById('kaleidoscopeCheckbox').addEventListener('change', function() {
+    g_kaleidoscopeMode = this.checked;
+  });
+  
 }
 
 function drawReferenceTriangles() {
@@ -337,7 +344,25 @@ function click(ev) {
     point.size = g_selectedSize;
   }
   
-  g_shapesList.push(point);
+  /// ChatGPT helped me with this kaleidoscope math/code
+  if (g_kaleidoscopeMode) {
+    for (let i = 0; i < g_kaleidoscopeSegments; i++) {
+      const angle = (2 * Math.PI / g_kaleidoscopeSegments) * i;
+      const cosA = Math.cos(angle);
+      const sinA = Math.sin(angle);
+
+      const xRotated = x * cosA - y * sinA;
+      const yRotated = x * sinA + y * cosA;
+
+      let clone = Object.create(Object.getPrototypeOf(point));
+      Object.assign(clone, point);
+      clone.position = [xRotated, yRotated];
+      g_shapesList.push(clone);
+    }
+  } 
+  else {
+    g_shapesList.push(point);
+  }
 
   // Draw every shape that is supposed to be drawn
   renderAllShapes();
