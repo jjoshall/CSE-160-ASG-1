@@ -25,6 +25,5 @@ class Point {
   
       // Draw
       gl.drawArrays(gl.POINTS, 0, 1);
-      //drawTriangle( [xy[0], xy[1], xy[0] + 0.1, xy[1], xy[0], xy[1] + 0.1]);
     }
   }
