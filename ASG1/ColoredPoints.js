@@ -77,6 +77,9 @@ let g_selectedSize = 5.0;
 let g_seletcedType = POINT;
 let g_seletcedSegment = 10;
 let g_selectedAlpha = 1.0;
+let g_spectrumDraw = false;
+let g_lastMousePos = null;
+let g_lastMouseTime = null;
 
 function addActionsForHtmlUI() {
   // Button events (shape type)
@@ -115,6 +118,11 @@ function addActionsForHtmlUI() {
   document.getElementById('recreateButton').onclick = function() {
     drawReferenceTriangles();
   }
+
+  // Spectrum drawing
+  document.getElementById('spectrumCheckbox').addEventListener('change', function() {
+    g_spectrumDraw = this.checked;
+  });
 }
 
 function drawReferenceTriangles() {
@@ -281,6 +289,21 @@ function click(ev) {
   // Extract the event click and return it in WebGL coordinates
   let [x, y] = convertCoordinatesEventToGL(ev);
 
+  /// ChatGPT helped me with this math
+  let currentTime = performance.now();
+  let velocity = 0;
+
+  if (g_lastMousePos && g_lastMouseTime) {
+    let dx = x - g_lastMousePos[0];
+    let dy = y - g_lastMousePos[1];
+    let dt = currentTime - g_lastMouseTime;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+    velocity = dist / dt; // pixels/ms
+  }
+
+  g_lastMousePos = [x, y];
+  g_lastMouseTime = currentTime;
+
   // Create and store a new point object
   let point;
   if (g_seletcedType == POINT) {
@@ -295,8 +318,25 @@ function click(ev) {
   }
 
   point.position = [x, y];
-  point.color = g_selectedColor.slice();
-  point.size = g_selectedSize;
+  
+  /// ChatGPT gave me some pointers with this portion 
+  if (g_spectrumDraw && velocity > 0) {
+    let speed = Math.min(velocity * 1000, 100);
+    point.size = Math.max(5, Math.min(30, speed));
+
+    let t = speed / 100;
+    point.color = [
+      t,
+      0.2,
+      1.0 - t,
+      g_selectedAlpha
+    ];
+  }
+  else {
+    point.color = g_selectedColor.slice();
+    point.size = g_selectedSize;
+  }
+  
   g_shapesList.push(point);
 
   // Draw every shape that is supposed to be drawn
