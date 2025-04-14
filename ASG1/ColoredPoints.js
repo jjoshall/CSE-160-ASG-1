@@ -117,22 +117,26 @@ function addActionsForHtmlUI() {
   }
 
   // Recreate the reference image
-  document.getElementById('recreateButton').onclick = function() {
-    drawReferenceTriangles();
-  }
+  document.getElementById('recreateButton').onclick = function() { drawReferenceTriangles(); }
 
   // Spectrum drawing
-  document.getElementById('spectrumCheckbox').addEventListener('change', function() {
-    g_spectrumDraw = this.checked;
-  });
+  document.getElementById('spectrumCheckbox').addEventListener('change', function() { g_spectrumDraw = this.checked; });
 
-  document.getElementById('kaleidoscopeCheckbox').addEventListener('change', function() {
-    g_kaleidoscopeMode = this.checked;
-  });
+  document.getElementById('kaleidoscopeCheckbox').addEventListener('change', function() { g_kaleidoscopeMode = this.checked; });
   
-  document.getElementById('replayButton').onclick = function() {
-    replayDrawing();
-  };  
+  document.getElementById('replayButton').onclick = function() { replayDrawing(); };
+
+  document.getElementById('saveButton').onclick = function() { saveCanvasImage(); };
+}
+
+/// ChatGPT helped me with the saving functionality
+function saveCanvasImage() {
+  const format = "image/png";
+
+  const link = document.createElement("a");
+  link.download = `drawing_${Date.now()}.png`;
+  link.href = canvas.toDataURL(format);
+  link.click();
 }
 
 /// ChatGPT helped me with this replay drawing function
